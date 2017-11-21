@@ -175,12 +175,12 @@ int main(int argc, char** argv) {
 
 			if (distanceToEnemy < 5.f)
 			{
-				// If very close then petrify (EX Flame strike)
+				// If very close then jump
 
 				lastPressTime = clock();
 
-				// Press the '2' key
-				keyEvent.ki.wVk = 0x32; // virtual-key code for the '2' key
+				// Press the space key
+				keyEvent.ki.wVk = VK_SPACE; // virtual-key code for the space key
 				keyEvent.ki.dwFlags = 0; // 0 for key press
 				SendInput(1, &keyEvent, sizeof(INPUT));
 
@@ -188,9 +188,9 @@ int main(int argc, char** argv) {
 				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 				SendInput(1, &keyEvent, sizeof(INPUT));
 			}
-			if (distanceToEnemy < 5.f)
+			if (distanceToEnemy < 60.f && distanceToEnemy > 20.f)
 			{
-				// Auto Knockback if close
+				// Auto Root
 				lastPressTime = clock();
 
 				// Press the "E" key
@@ -202,9 +202,9 @@ int main(int argc, char** argv) {
 				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 				SendInput(1, &keyEvent, sizeof(INPUT));
 			}
-			//if (distanceToEnemy < 30.f)
+			//if (distanceToEnemy < 40.f)
 			//{
-			//	// if in range cast R
+			//	// Auto totem
 			//	lastPressTime = clock();
 
 			//	// Press the "R" key
@@ -216,20 +216,6 @@ int main(int argc, char** argv) {
 			//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 			//	SendInput(1, &keyEvent, sizeof(INPUT));
 			//}
-			if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
-			{
-				// if in range cast Q
-				lastPressTime = clock();
-
-				// Press the "Q" key
-				keyEvent.ki.wVk = 0x51; // virtual-key code for the "Q" key
-				keyEvent.ki.dwFlags = 0; // 0 for key press
-				SendInput(1, &keyEvent, sizeof(INPUT));
-
-				// Release the "Q" key
-				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-				SendInput(1, &keyEvent, sizeof(INPUT));
-			}
 		}
 
 		// The aimbot
