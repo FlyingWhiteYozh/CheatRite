@@ -165,15 +165,8 @@ int main(int argc, char** argv) {
 		static clock_t lastPressTime = clock();
 		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
 
-		if (distanceToEnemy > 0.f && differenceInTime > 0.5)
-		{
-			INPUT keyEvent;
-			keyEvent.type = INPUT_KEYBOARD;
-			keyEvent.ki.wScan = 0;
-			keyEvent.ki.time = 0;
-			keyEvent.ki.dwExtraInfo = 0;
 
-			if (distanceToEnemy > 0.f && differenceInTime > 0.5)
+		if (distanceToEnemy > 0.f && differenceInTime > 0.5)
 			{
 				INPUT keyEvent;
 				keyEvent.type = INPUT_KEYBOARD;
@@ -244,8 +237,6 @@ int main(int argc, char** argv) {
 					SendInput(1, &keyEvent, sizeof(INPUT));
 				}
 			}
-
-		}
 
 
 		// The aimbot
