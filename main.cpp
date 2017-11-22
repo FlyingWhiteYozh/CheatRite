@@ -264,7 +264,7 @@ int main(int argc, char** argv) {
 					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 					SendInput(1, &keyEvent, sizeof(INPUT));
 				}
-				if ((distanceToEnemy < 20.f && distanceToAlly < 20.f) || projectileWillHitUs)
+				if ((distanceToEnemy < 30.f && distanceToAlly < 20.f) || projectileWillHitUs)
 				{
 					// Auto EX STEALTH if near
 
@@ -280,22 +280,22 @@ int main(int argc, char** argv) {
 					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 					SendInput(1, &keyEvent, sizeof(INPUT));
 				}
-				if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
-				{
-					// Auto EX SNIPE if not close and in range
+				//else if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
+				//{
+				//	// Auto EX SNIPE if not close and in range
 
-					// if in range cast 1
-					lastPressTime = clock();
+				//	// if in range cast 1
+				//	lastPressTime = clock();
 
-					// Press the "1" key
-					keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
-					keyEvent.ki.dwFlags = 0; // 0 for key press
-					SendInput(1, &keyEvent, sizeof(INPUT));
+				//	// Press the "1" key
+				//	keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
+				//	keyEvent.ki.dwFlags = 0; // 0 for key press
+				//	SendInput(1, &keyEvent, sizeof(INPUT));
 
-					// Release the "1" key
-					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-					SendInput(1, &keyEvent, sizeof(INPUT));
-				}
+				//	// Release the "1" key
+				//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				//	SendInput(1, &keyEvent, sizeof(INPUT));
+				//}
 			}
 
 
@@ -304,8 +304,8 @@ int main(int argc, char** argv) {
 		if (distanceToEnemy > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
 		{
 			// Movement prediction
-			float dx = targetEnemy.x + targetEnemy.velocityX*4 - x;
-			float dy = targetEnemy.y + targetEnemy.velocityY*4 - y;
+			float dx = targetEnemy.x + targetEnemy.velocityX*5 - x;
+			float dy = targetEnemy.y + targetEnemy.velocityY*5 - y;
 
 			Vector2* vec = window.GetWindowPosition();
 
