@@ -215,6 +215,64 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
+		// Raigon scripts
+
+		static clock_t lastPressTime = clock();
+		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
+
+		if (distanceToEnemy > 0.f && differenceInTime > 0.5)
+		{
+			INPUT keyEvent;
+			keyEvent.type = INPUT_KEYBOARD;
+			keyEvent.ki.wScan = 0;
+			keyEvent.ki.time = 0;
+			keyEvent.ki.dwExtraInfo = 0;
+
+			if (projectileWillHitUs && distanceToEnemy < 80.f)
+			{
+				// Auto block projectile
+
+				lastPressTime = clock();
+
+				// Press the "Q" key
+				keyEvent.ki.wVk = 0x51; // virtual-key code for the "Q" key
+				keyEvent.ki.dwFlags = 0; // 0 for key press
+				SendInput(1, &keyEvent, sizeof(INPUT));
+
+				// Release the space key
+				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				SendInput(1, &keyEvent, sizeof(INPUT));
+			}
+			if (distanceToEnemy < 100.f && distanceToEnemy > 40.f)
+			{
+				// Auto Ex Sesimic Shock
+				lastPressTime = clock();
+
+				// Press the "2" key
+				keyEvent.ki.wVk = 0x32; // virtual-key code for the "2" key
+				keyEvent.ki.dwFlags = 0; // 0 for key press
+				SendInput(1, &keyEvent, sizeof(INPUT));
+
+				// Release the "2" key
+				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				SendInput(1, &keyEvent, sizeof(INPUT));
+			}
+			if (distanceToEnemy < 100.f && distanceToEnemy > 40.f)
+			{
+				// Auto Sesimic Shock
+				lastPressTime = clock();
+
+				// Press the "E" key
+				keyEvent.ki.wVk = 0x45; // virtual-key code for the "E" key
+				keyEvent.ki.dwFlags = 0; // 0 for key press
+				SendInput(1, &keyEvent, sizeof(INPUT));
+
+				// Release the "E" key
+				keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				SendInput(1, &keyEvent, sizeof(INPUT));
+			}
+		}
+
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
 		if (distanceToEnemy > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
