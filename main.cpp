@@ -264,7 +264,7 @@ int main(int argc, char** argv) {
 					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 					SendInput(1, &keyEvent, sizeof(INPUT));
 				}
-				if (distanceToEnemy < 20.f && distanceToAlly < 20.f)
+				if ((distanceToEnemy < 20.f && distanceToAlly < 20.f) || projectileWillHitUs)
 				{
 					// Auto EX STEALTH if near
 
