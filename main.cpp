@@ -223,23 +223,18 @@ int main(int argc, char** argv) {
 		// Jade scripts
 
 		// Read all inputs to game
-		const int alphaInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA);
-		const int numericInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_NUMERIC);
-		const int mouseInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_MOUSE);
-
-		int newAlphaInput = alphaInput;
-		int newNumericInput = numericInput;
-		int newMouseInput = mouseInput;
-
+		int alphaInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA);
+		int numericInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_NUMERIC);
+		int mouseInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_MOUSE);
 
 		// Always attempt to auto attack in  range
 		if (distanceToEnemy > 0.1f && distanceToEnemy < 65.f)
 		{
-			newMouseInput |= CAST_LEFT;
+			mouseInput |= CAST_LEFT;
 		}
 		else
 		{
-			newMouseInput &= ~CAST_LEFT;
+			mouseInput &= ~CAST_LEFT;
 		}
 
 		static clock_t lastPressTime = clock();
@@ -253,43 +248,40 @@ int main(int argc, char** argv) {
 			// If very close then jump
 			if (distanceToEnemy < 5.f)
 			{
-				newNumericInput |= CAST_SPACE;
+				numericInput |= CAST_SPACE;
 			}
 
 			// Auto Knockback if very close, change to 20.f for normal range
 			if (distanceToEnemy < 10.f)
 			{
-				newAlphaInput |= CAST_R;
+				alphaInput |= CAST_R;
 			}
 
 			// Auto EX STEALTH if near
 			if ((distanceToEnemy < 30.f && distanceToAlly < 20.f) || projectileWillHitUs)
 			{
-				newNumericInput |= CAST_2;
+				numericInput |= CAST_2;
 			}
 			
 			// Auto EX SNIPE
 			if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
 			{
-				newNumericInput |= CAST_1;
+				numericInput |= CAST_1;
 			}
 		}
 		else
 		{
 			// Disable cast of anything
-			newNumericInput &= ~CAST_SPACE;
-			newAlphaInput &= ~CAST_R;
-			newNumericInput &= ~CAST_2;
-			newNumericInput &= ~CAST_1;
+			numericInput &= ~CAST_SPACE;
+			alphaInput &= ~CAST_R;
+			numericInput &= ~CAST_2;
+			numericInput &= ~CAST_1;
 		}
 
-		// Write input if there is a change otherwise we may overwrite a change between reading and now
-		if (newAlphaInput != alphaInput)
-			Write<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA, newAlphaInput);
-		if (newNumericInput != numericInput)
-			Write<int>(memory.handle, b5 + OFFSET_LOCAL_NUMERIC, newNumericInput);
-		if (newMouseInput != mouseInput)
-			Write<int>(memory.handle, b5 + OFFSET_LOCAL_MOUSE, newMouseInput);
+		// Write all inputs
+		Write<int>(memory.handle, b5 + OFFSET_LOCAL_MOUSE, mouseInput);
+		Write<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA, alphaInput);
+		Write<int>(memory.handle, b5 + OFFSET_LOCAL_NUMERIC, numericInput);
 
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
