@@ -222,66 +222,82 @@ int main(int argc, char** argv) {
 
 		// Jade scripts
 
-		// Read all inputs to game
-		int alphaInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA);
-		int numericInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_NUMERIC);
-		int mouseInput = Read<int>(memory.handle, b5 + OFFSET_LOCAL_MOUSE);
-
-		// Always attempt to auto attack in  range
-		if (distanceToEnemy > 0.1f && distanceToEnemy < 65.f)
-		{
-			mouseInput |= CAST_LEFT;
-		}
-		else
-		{
-			mouseInput &= ~CAST_LEFT;
-		}
-
 		static clock_t lastPressTime = clock();
 		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
 
-		// Try abiltiies twice a second
-		if (distanceToEnemy > 0.1f && differenceInTime > 0.5f)
-		{
-			lastPressTime = clock();
 
-			// If very close then jump
-			if (distanceToEnemy < 5.f)
+		if (distanceToEnemy > 0.f && differenceInTime > 0.5)
 			{
-				numericInput |= CAST_SPACE;
+				INPUT keyEvent;
+				keyEvent.type = INPUT_KEYBOARD;
+				keyEvent.ki.wScan = 0;
+				keyEvent.ki.time = 0;
+				keyEvent.ki.dwExtraInfo = 0;
+
+				if (distanceToEnemy < 5.f)
+				{
+					// If very close then jump
+
+					lastPressTime = clock();
+
+					// Press the space key
+					keyEvent.ki.wVk = VK_SPACE; // virtual-key code for the space key
+					keyEvent.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &keyEvent, sizeof(INPUT));
+
+					// Release the space key
+					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &keyEvent, sizeof(INPUT));
+				}
+				if (distanceToEnemy < 10.f)
+				{
+					// Auto Knockback if very close, change to 20.f for normal range
+
+					lastPressTime = clock();
+
+					// Press the "R" key
+					keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
+					keyEvent.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &keyEvent, sizeof(INPUT));
+
+					// Release the "R" key
+					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &keyEvent, sizeof(INPUT));
+				}
+				if ((distanceToEnemy < 30.f && distanceToAlly < 20.f) || projectileWillHitUs)
+				{
+					// Auto EX STEALTH if near
+
+					// if in range cast 2
+					lastPressTime = clock();
+
+					// Press the "2" key
+					keyEvent.ki.wVk = 0x32; // virtual-key code for the "2" key
+					keyEvent.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &keyEvent, sizeof(INPUT));
+
+					// Release the "2" key
+					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &keyEvent, sizeof(INPUT));
+				}
+				//else if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
+				//{
+				//	// Auto EX SNIPE if not close and in range
+
+				//	// if in range cast 1
+				//	lastPressTime = clock();
+
+				//	// Press the "1" key
+				//	keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
+				//	keyEvent.ki.dwFlags = 0; // 0 for key press
+				//	SendInput(1, &keyEvent, sizeof(INPUT));
+
+				//	// Release the "1" key
+				//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				//	SendInput(1, &keyEvent, sizeof(INPUT));
+				//}
 			}
 
-			// Auto Knockback if very close, change to 20.f for normal range
-			if (distanceToEnemy < 10.f)
-			{
-				alphaInput |= CAST_R;
-			}
-
-			// Auto EX STEALTH if near
-			if ((distanceToEnemy < 30.f && distanceToAlly < 20.f) || projectileWillHitUs)
-			{
-				numericInput |= CAST_2;
-			}
-			
-			// Auto EX SNIPE
-			if (distanceToEnemy > 20.f && distanceToEnemy < 100.f)
-			{
-				numericInput |= CAST_1;
-			}
-		}
-		else
-		{
-			// Disable cast of anything
-			numericInput &= ~CAST_SPACE;
-			alphaInput &= ~CAST_R;
-			numericInput &= ~CAST_2;
-			numericInput &= ~CAST_1;
-		}
-
-		// Write all inputs
-		Write<int>(memory.handle, b5 + OFFSET_LOCAL_MOUSE, mouseInput);
-		Write<int>(memory.handle, b5 + OFFSET_LOCAL_ALPHA, alphaInput);
-		Write<int>(memory.handle, b5 + OFFSET_LOCAL_NUMERIC, numericInput);
 
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
