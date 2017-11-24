@@ -219,7 +219,7 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
-		// Ashka scripts
+		// Ezmo scripts
 
 		static clock_t lastPressTime = clock();
 		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
@@ -276,10 +276,12 @@ int main(int argc, char** argv) {
 				SendInput(1, &keyEvent, sizeof(INPUT));
 			}
 		}
+		// Do not case aggressive spells if mouse button 5 is held
+		bool passivePlay = (GetKeyState(VK_XBUTTON2) & 0x100) != 0;
 
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
-		if (distanceToEnemy > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
+		if (distanceToEnemy > 1.f && !passivePlay)
 		{
 			// Movement prediction
 			float dx = targetEnemy.x + targetEnemy.velocityX*6 - x;
