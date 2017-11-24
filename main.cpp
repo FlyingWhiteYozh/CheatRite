@@ -231,7 +231,7 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
-		// Jade scripts
+		// Pearl scripts
 
 		// Do not case aggressive spells if mouse button 5 is held
 		bool passivePlay = (GetKeyState(VK_XBUTTON2) & 0x100) != 0;
@@ -260,35 +260,52 @@ int main(int argc, char** argv) {
 					SendInput(1, &keyEvent, sizeof(INPUT));
 
 					// Move opposite direction of enemy
-					multiplier = -1.f;
+					multiplier = -100.f;
 				}
-				else if (!cooldownR && distanceToEnemy < 10.f && !passivePlay)
+				else if (!cooldownQ && projectileWillHitUs && distanceToEnemy > 30.f)
 				{
-					// Auto Knockback if very close, change to 20.f for normal range
+					// Auto Counter
 
-					// Press the "R" key
-					keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
+					keyEvent.ki.wVk = 0x51; // virtual-key code for the "Q" key
 					keyEvent.ki.dwFlags = 0; // 0 for key press
 					SendInput(1, &keyEvent, sizeof(INPUT));
 
-					// Release the "R" key
 					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 					SendInput(1, &keyEvent, sizeof(INPUT));
 				}
-				else if (!cooldownQ &&((distanceToEnemy < 30.f && distanceToAlly < 20.f) || projectileWillHitUs))
+				else if (!cooldownE && projectileWillHitUs)
 				{
-					// Auto EX STEALTH if near
+					// Auto Bubble
 
-					// if in range cast 2
-					// Press the "2" key
-					keyEvent.ki.wVk = 0x32; // virtual-key code for the "2" key
+					keyEvent.ki.wVk = 0x45; // virtual-key code for the "E" key
 					keyEvent.ki.dwFlags = 0; // 0 for key press
 					SendInput(1, &keyEvent, sizeof(INPUT));
 
-					// Release the "2" key
+					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+					SendInput(1, &keyEvent, sizeof(INPUT));
+
+					multiplier = 0.5f;
+				}
+				else if (!cooldownR && projectileWillHitUs)
+				{
+					// Auto Shield
+
+					keyEvent.ki.wVk = 0x52; // virtual-key code for the "R" key
+					keyEvent.ki.dwFlags = 0; // 0 for key press
+					SendInput(1, &keyEvent, sizeof(INPUT));
+
 					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 					SendInput(1, &keyEvent, sizeof(INPUT));
 				}
+				//else if (distanceToEnemy > 100.f)
+				//{
+				//	keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
+				//	keyEvent.ki.dwFlags = 0; // 0 for key press
+				//	SendInput(1, &keyEvent, sizeof(INPUT));
+
+				//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+				//	SendInput(1, &keyEvent, sizeof(INPUT));
+				//}
 			}
 
 		// The aimbot
@@ -309,8 +326,16 @@ int main(int argc, char** argv) {
 			}
 
 			// change this 69 till your cursor hits exactly on champ
+
 			vec->x = 1920 / 2 + multiplier*(dx * 69);
 			vec->y = 1080 / 2 - multiplier*(dy * 69);
+
+			// Auto heal on right click
+			if ((GetKeyState(VK_RBUTTON) & 0x100) != 0)
+			{
+				vec->x = 1920 / 2;
+				vec->y = 1080 / 2;
+			}
 
 
 			mouse.executeMovementTo(window, *vec);
