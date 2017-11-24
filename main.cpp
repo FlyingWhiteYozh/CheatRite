@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
 		float cooldownE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_E);
 		float cooldownRIGHT = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_RIGHT);
 		float cooldownSPACE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_SPACE);
-
+		std::cout << cooldownQ << std::endl;
 		// Get local players coordinates
 		DWORD p1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
 		DWORD p2 = Read<DWORD>(memory.handle, p1 + OFFSET_LOCAL_PLAYER[1]);
@@ -233,15 +233,12 @@ int main(int argc, char** argv) {
 
 		// Jade scripts
 
-		static clock_t lastPressTime = clock();
-		float differenceInTime = (clock() - lastPressTime) / CLOCKS_PER_SEC;
-
 		// Do not case aggressive spells if mouse button 5 is held
 		bool passivePlay = (GetKeyState(VK_XBUTTON2) & 0x100) != 0;
 
 		// Aim at target = 1, aim inbetween = 0.5
 		float multiplier = 1.f;
-		if (distanceToEnemy > 0.f && differenceInTime > 0.5)
+		if (distanceToEnemy > 0.f)
 			{
 				INPUT keyEvent;
 				keyEvent.type = INPUT_KEYBOARD;
@@ -252,8 +249,6 @@ int main(int argc, char** argv) {
 				if (!cooldownSPACE && distanceToEnemy < 5.f)
 				{
 					// If very close then jump
-
-					lastPressTime = clock();
 
 					// Press the space key
 					keyEvent.ki.wVk = VK_SPACE; // virtual-key code for the space key
@@ -271,8 +266,6 @@ int main(int argc, char** argv) {
 				{
 					// Auto Knockback if very close, change to 20.f for normal range
 
-					lastPressTime = clock();
-
 					// Press the "R" key
 					keyEvent.ki.wVk = 0x52; // virtual-key code for the "r" key
 					keyEvent.ki.dwFlags = 0; // 0 for key press
@@ -287,8 +280,6 @@ int main(int argc, char** argv) {
 					// Auto EX STEALTH if near
 
 					// if in range cast 2
-					lastPressTime = clock();
-
 					// Press the "2" key
 					keyEvent.ki.wVk = 0x32; // virtual-key code for the "2" key
 					keyEvent.ki.dwFlags = 0; // 0 for key press
