@@ -94,10 +94,14 @@ int main(int argc, char** argv) {
 			if (targetTeam != 1 && targetTeam != 2)
 				continue;
 
+			// Out of map
+			if (targetX > 100.f || targetX < -100.f || targetY > 100.f || targetY < -100.f)
+				continue;
+
 			if (targetDirectionX || targetDirectionY)
 			{
 				// Trace ray with fixed range for all projectiles
-				for (int i = 0; i < 200; i++)
+				for (int i = 5; i < 200; i++)
 				{
 					float projectedX = targetX + targetDirectionX/10 * i;
 					float projectedY = targetY + targetDirectionY/10 * i;
@@ -272,10 +276,12 @@ int main(int argc, char** argv) {
 				SendInput(1, &keyEvent, sizeof(INPUT));
 			}
 		}
+		// Do not case aggressive spells if mouse button 5 is held
+		bool passivePlay = (GetKeyState(VK_XBUTTON2) & 0x100) != 0;
 
 		// The aimbot
 		// If mouse button 5 is not pressed then aim at closest target
-		if (distanceToEnemy > 1.f && !((GetKeyState(VK_XBUTTON2) & 0x100) != 0))
+		if (distanceToEnemy > 1.f && !passivePlay)
 		{
 			// Movement prediction
 			float dx = targetEnemy.x + targetEnemy.velocityX*4 - x;
@@ -296,7 +302,7 @@ int main(int argc, char** argv) {
 
 
 			mouse.executeMovementTo(window, *vec);
-			Sleep(1);
+			Sleep(50);
 		}
 	}
 
