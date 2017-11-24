@@ -232,7 +232,7 @@ int main(int argc, char** argv) {
 			keyEvent.ki.time = 0;
 			keyEvent.ki.dwExtraInfo = 0;
 
-			if (projectileWillHitUs && distanceToEnemy < 80.f)
+			if (projectileWillHitUs && distanceToEnemy > 30.f)
 			{
 				// Auto block projectile
 
