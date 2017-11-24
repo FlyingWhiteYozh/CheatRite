@@ -302,7 +302,7 @@ int main(int argc, char** argv) {
 
 
 			mouse.executeMovementTo(window, *vec);
-			Sleep(1);
+			Sleep(50);
 		}
 	}
 
