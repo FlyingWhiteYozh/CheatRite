@@ -62,12 +62,6 @@ int main(int argc, char** argv) {
 		float cooldownRIGHT = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_RIGHT);
 		float cooldownSPACE = Read<float>(memory.handle, c5 + OFFSET_COOLDOWNS_SPACE);
 
-		std::cout << cooldownQ << std::endl;
-		std::cout << cooldownR << std::endl;
-		std::cout << cooldownE << std::endl;
-		std::cout << cooldownRIGHT << std::endl;
-		std::cout << cooldownSPACE << std::endl;
-
 		// Get local players coordinates
 		DWORD p1 = Read<DWORD>(memory.handle, memory.Battlerite_Base + OFFSET_LOCAL_PLAYER[0]);
 		DWORD p2 = Read<DWORD>(memory.handle, p1 + OFFSET_LOCAL_PLAYER[1]);
@@ -103,7 +97,6 @@ int main(int argc, char** argv) {
 			float targetX = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_X + i * PLAYER_SIZE);
 			int targetTeam = Read<int>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_TEAM + i * PLAYER_SIZE);
 			float targetY = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_Y + i * PLAYER_SIZE);
-
 			// 1 is right -1 is left
 			float targetDirectionX = Read<float>(memory.handle, e4 + OFFSET_ENTITY_START + OFFSET_ENTITY_DIRECTION_X + i * PLAYER_SIZE);
 			// 1 is up -1 is down
@@ -246,6 +239,8 @@ int main(int argc, char** argv) {
 		// Do not case aggressive spells if mouse button 5 is held
 		bool passivePlay = (GetKeyState(VK_XBUTTON2) & 0x100) != 0;
 
+		// Aim at target = 1, aim inbetween = 0.5
+		float multiplier = 1.f;
 		if (distanceToEnemy > 0.f && differenceInTime > 0.5)
 			{
 				INPUT keyEvent;
@@ -254,7 +249,7 @@ int main(int argc, char** argv) {
 				keyEvent.ki.time = 0;
 				keyEvent.ki.dwExtraInfo = 0;
 
-				if (distanceToEnemy < 5.f)
+				if (!cooldownSPACE && distanceToEnemy < 5.f)
 				{
 					// If very close then jump
 
@@ -268,8 +263,11 @@ int main(int argc, char** argv) {
 					// Release the space key
 					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 					SendInput(1, &keyEvent, sizeof(INPUT));
+
+					// Move opposite direction of enemy
+					multiplier = -1.f;
 				}
-				if (distanceToEnemy < 10.f && !passivePlay)
+				else if (!cooldownR && distanceToEnemy < 10.f && !passivePlay)
 				{
 					// Auto Knockback if very close, change to 20.f for normal range
 
@@ -284,7 +282,7 @@ int main(int argc, char** argv) {
 					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 					SendInput(1, &keyEvent, sizeof(INPUT));
 				}
-				if ((distanceToEnemy < 30.f && distanceToAlly < 20.f) || projectileWillHitUs)
+				else if (!cooldownQ &&((distanceToEnemy < 30.f && distanceToAlly < 20.f) || projectileWillHitUs))
 				{
 					// Auto EX STEALTH if near
 
@@ -300,22 +298,6 @@ int main(int argc, char** argv) {
 					keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
 					SendInput(1, &keyEvent, sizeof(INPUT));
 				}
-				//else if (distanceToEnemy > 20.f && distanceToEnemy < 100.f && !passivePlay)
-				//{
-				//	// Auto EX SNIPE if not close and in range
-
-				//	// if in range cast 1
-				//	lastPressTime = clock();
-
-				//	// Press the "1" key
-				//	keyEvent.ki.wVk = 0x31; // virtual-key code for the "1" key
-				//	keyEvent.ki.dwFlags = 0; // 0 for key press
-				//	SendInput(1, &keyEvent, sizeof(INPUT));
-
-				//	// Release the "1" key
-				//	keyEvent.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
-				//	SendInput(1, &keyEvent, sizeof(INPUT));
-				//}
 			}
 
 		// The aimbot
@@ -336,8 +318,8 @@ int main(int argc, char** argv) {
 			}
 
 			// change this 69 till your cursor hits exactly on champ
-			vec->x = 1920 / 2 + dx * 69;
-			vec->y = 1080 / 2 - dy * 69;
+			vec->x = 1920 / 2 + multiplier*(dx * 69);
+			vec->y = 1080 / 2 - multiplier*(dy * 69);
 
 
 			mouse.executeMovementTo(window, *vec);
